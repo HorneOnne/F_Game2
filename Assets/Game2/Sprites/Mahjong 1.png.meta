@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 225
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -121,7 +121,322 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Mahjong 1_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 939
+        width: 196
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d96ba58076c3b6641b3df4dbe934427b
+      internalID: -1628288299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_1
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 939
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36fc62f56fb09804baa9b5ad6db0ad3d
+      internalID: 198255432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_2
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 939
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85a8a89e7d409404ea71ddc195bede5d
+      internalID: 701926576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_3
+      rect:
+        serializedVersion: 2
+        x: 723
+        y: 939
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bdc6f5b34065ee645a7c1d764641a574
+      internalID: 1846860246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_4
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 626
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2dcdceac3e59cf45bc613219c7191a6
+      internalID: -1884739181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_5
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 626
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bafa8311e29945469f7824da23651cb
+      internalID: 300764696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_6
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 626
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b5aba2c07176f942beefc0c7911c586
+      internalID: 375236322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_7
+      rect:
+        serializedVersion: 2
+        x: 723
+        y: 626
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 588a183b9b158114ba068084fe9f1092
+      internalID: -1658308616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_8
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 313
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52d429033749f444d99c7f5401061b5b
+      internalID: -1729173349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_9
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 313
+        width: 195
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 22a378c72c575f141952a79e7c2a151a
+      internalID: 1909701298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_10
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 313
+        width: 196
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a49954bbdc51d244ba1c8eb51e621256
+      internalID: 2042859817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_11
+      rect:
+        serializedVersion: 2
+        x: 722
+        y: 313
+        width: 196
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5696554cf6b117f45a685629649b34f7
+      internalID: 782728049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_12
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 0
+        width: 196
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f36b4111825beef418cc89478a6ed8f3
+      internalID: 1370913006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_13
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 0
+        width: 196
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e514332f48602f447a1f5a046f9a3b38
+      internalID: -124075345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mahjong 1_14
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 0
+        width: 196
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1d8e08c9e2a5b14e8c54bb5379bc957
+      internalID: 1426990083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -132,7 +447,22 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Mahjong 1_0: -1628288299
+      Mahjong 1_1: 198255432
+      Mahjong 1_10: 2042859817
+      Mahjong 1_11: 782728049
+      Mahjong 1_12: 1370913006
+      Mahjong 1_13: -124075345
+      Mahjong 1_14: 1426990083
+      Mahjong 1_2: 701926576
+      Mahjong 1_3: 1846860246
+      Mahjong 1_4: -1884739181
+      Mahjong 1_5: 300764696
+      Mahjong 1_6: 375236322
+      Mahjong 1_7: -1658308616
+      Mahjong 1_8: -1729173349
+      Mahjong 1_9: 1909701298
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
