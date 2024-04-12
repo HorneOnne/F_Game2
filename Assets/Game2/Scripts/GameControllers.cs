@@ -13,7 +13,7 @@ public class GameControllers : MonoBehaviour
 
     private Vector2 _mahjongOffset = new Vector2(1.5f, 2f);
     private List<Mahjong> Mahjongs = new();
-    [SerializeField] private MahjongSO[] _initializeData;
+    [SerializeField] private List<MahjongSO> _initializeData;
     private int _currentGetDataIndex = 0;
 
 
@@ -25,6 +25,7 @@ public class GameControllers : MonoBehaviour
     public int Layer1Size { get => layer1.x + layer1.y + layer1.z; }
     public int Layer2Size { get => layer2.x + layer2.y + layer2.z; }
     public int Layer3Size { get => layer3.x + layer3.y + layer3.z; }
+    System.Random rng;
 
     public enum PlayState
     {
@@ -43,6 +44,8 @@ public class GameControllers : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        long seed = System.DateTime.Now.Ticks;
+        rng = new System.Random((int)seed);
     }
 
     private void Start()
@@ -54,29 +57,54 @@ public class GameControllers : MonoBehaviour
             Debug.Log("Size not a even number.");
         }
         Debug.Log($"size: {size}");
-        _initializeData = new MahjongSO[size];
+        _initializeData = new();
+        _currentGetDataIndex = 0;
         for (int i = 0; i < size; i++)
         {
             if (i < size / 2)
             {
-                _initializeData[i] = (_allMahjongData[Random.Range(0, _allMahjongData.Count)]);
+                _initializeData.Add(_allMahjongData[Random.Range(0, _allMahjongData.Count)]);
             }
             else
             {
-                _initializeData[i] = (_initializeData[i % (size / 2)]);
+                _initializeData.Add(_initializeData[i % (size / 2)]);
             }
         }
-        ShuffleArray(_initializeData);
+        ShuffleList(_initializeData);
 
         GenerateLayerOfMahjong(layer1.x, layer1.y, layer1.z, 0);
         GenerateLayerOfMahjong(layer2.x, layer2.y, layer2.z, 1);
         GenerateLayerOfMahjong(layer3.x, layer3.y, layer3.z, 2);
     }
 
+    public void RecreateTable()
+    {
+        _currentGetDataIndex = 0;
+        _initializeData.Clear();
+        for(int i = 0; i < Mahjongs.Count; i++)
+        {
+            _initializeData.Add(Mahjongs[i].Data);
+        }
+        ShuffleList(_initializeData);
+        for (int i = 0; i < Mahjongs.Count; i++)
+        {
+            Destroy(Mahjongs[i].gameObject);
+        }
+        Mahjongs.Clear();
+
+        GenerateLayerOfMahjong(layer1.x, layer1.y, layer1.z, 0);
+        GenerateLayerOfMahjong(layer2.x, layer2.y, layer2.z, 1);
+        GenerateLayerOfMahjong(layer3.x, layer3.y, layer3.z, 2);
+
+    }
+
 
     private void Update()
     {
-
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            RecreateTable();
+        }
         switch (State)
         {
             default:
@@ -166,7 +194,8 @@ public class GameControllers : MonoBehaviour
 
                    if(CanPlayble() == false)
                     {
-                        ShuffleTable();
+                        //ShuffleTable();
+                        Debug.Log("Cannot play");
                     }
 
                     State = PlayState.Default;
@@ -176,39 +205,44 @@ public class GameControllers : MonoBehaviour
 
     }
 
-    private void GenerateLayerOfMahjong(int line1Width, int line2Width, int line3Width, int layer, int max = 1000)
+    private void GenerateLayerOfMahjong(int line1Width, int line2Width, int line3Width, int layer)
     {
-        int count = 0;
         float startLine1 = Center.position.x - ((line1Width - 1) / 2.0f * _mahjongOffset.x);
         for (int x = 0; x < line1Width; x++)
         {
             Vector2 position = new Vector2(startLine1 + x * _mahjongOffset.x, Center.position.y + _mahjongOffset.y) + new Vector2(layer * 0.1f, layer * 0.1f);
-            Mahjongs.Add(CreateMahjong(position, layer));
-            count++;
-            if (count >= max)
-                break;
+          
+            if(_currentGetDataIndex < _initializeData.Count)
+            {
+                var data = _initializeData[_currentGetDataIndex];
+                _currentGetDataIndex++;
+                Mahjongs.Add(CreateMahjong(data, position, layer));
+            }       
         }
 
         float startLine2 = Center.position.x - ((line2Width - 1) / 2.0f * _mahjongOffset.x);
         for (int x = 0; x < line2Width; x++)
         {
             Vector2 position = new Vector2(startLine2 + x * _mahjongOffset.x, Center.position.y) + new Vector2(layer * 0.1f, layer * 0.1f);
-            Mahjongs.Add(CreateMahjong(position, layer));
 
-            count++;
-            if (count >= max)
-                break;
+            if (_currentGetDataIndex < _initializeData.Count)
+            {
+                var data = _initializeData[_currentGetDataIndex];
+                _currentGetDataIndex++;
+                Mahjongs.Add(CreateMahjong(data, position, layer));
+            }
         }
 
         float startLine3 = Center.position.x - ((line3Width - 1) / 2.0f * _mahjongOffset.x);
         for (int x = 0; x < line3Width; x++)
         {
             Vector2 position = new Vector2(startLine3 + x * _mahjongOffset.x, Center.position.y - _mahjongOffset.y) + new Vector2(layer * 0.1f, layer * 0.1f);
-            Mahjongs.Add(CreateMahjong(position, layer));
-
-            count++;
-            if (count >= max)
-                break;
+            if (_currentGetDataIndex < _initializeData.Count)
+            {
+                var data = _initializeData[_currentGetDataIndex];
+                _currentGetDataIndex++;
+                Mahjongs.Add(CreateMahjong(data, position, layer));
+            }
         }
     }
 
@@ -229,14 +263,13 @@ public class GameControllers : MonoBehaviour
         }
     }
 
-    public Mahjong CreateMahjong(Vector2 position, int layer)
+    public Mahjong CreateMahjong(MahjongSO data, Vector2 position, int layer)
     {
         var prefab = Resources.Load<Mahjong>("Mahjong");
         if (prefab != null)
         {
             var mahjongInstance = Instantiate(prefab, position, Quaternion.identity).GetComponent<Mahjong>();
-            mahjongInstance.SetData(_initializeData[_currentGetDataIndex], layer);
-            _currentGetDataIndex++;
+            mahjongInstance.SetData(data, layer);
             return mahjongInstance;
         }
         return null;
@@ -374,18 +407,35 @@ public class GameControllers : MonoBehaviour
 
 
     }
-    void ShuffleArray<T>(T[] array)
-    {
-        System.Random rng = new System.Random();
+    //void ShuffleArray<T>(T[] array)
+    //{
+    //    Debug.Log("Shuffle");
+    //    int n = array.Length;
+    //    while (n > 1)
+    //    {
+    //        n--;
+    //        int k = rng.Next(n + 1);
+    //        T value = array[k];
+    //        array[k] = array[n];
+    //        array[n] = value;
 
-        int n = array.Length;
+    //        Debug.Log("a");
+    //    }
+    //}
+
+    void ShuffleList<T>(List<T> list)
+    {
+        Debug.Log("Shuffle");
+        int n = list.Count;
         while (n > 1)
         {
             n--;
             int k = rng.Next(n + 1);
-            T value = array[k];
-            array[k] = array[n];
-            array[n] = value;
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+
+            Debug.Log("a");
         }
     }
     #endregion
