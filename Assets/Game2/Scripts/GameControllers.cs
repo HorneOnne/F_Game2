@@ -11,24 +11,27 @@ public class GameControllers : MonoBehaviour
     [SerializeField] private LayerMask _mahjongLayer;
 
 
-    private Vector2 _mahjongOffset = new Vector2(1.5f, 2f);
+    private Vector2 _mahjongOffset = new Vector2(1, 1.35f);
     private List<Mahjong> Mahjongs = new();
-    [SerializeField] private List<MahjongSO> _initializeData;
+    private List<MahjongSO> _initializeData;
     private int _currentGetDataIndex = 0;
 
 
-    private Vector3Int layer1 = new Vector3Int(3, 2, 3);
-    private Vector3Int layer2 = new Vector3Int(2, 2, 2);
-    private Vector3Int layer3 = new Vector3Int(3, 2, 3);
+    private Vector3Int layer1 = new Vector3Int(4, 3, 4);
+    private Vector3Int layer2 = new Vector3Int(3, 2, 3);
+    private Vector3Int layer3 = new Vector3Int(4, 3, 4);
 
 
     public int Layer1Size { get => layer1.x + layer1.y + layer1.z; }
     public int Layer2Size { get => layer2.x + layer2.y + layer2.z; }
     public int Layer3Size { get => layer3.x + layer3.y + layer3.z; }
-    System.Random rng;
+    private System.Random rng;
+
+    public MahjongSO RequestMahjong { get; private set; }   
 
     public enum PlayState
     {
+        CheckingCanplayable,
         Default,
         Checking
     }
@@ -50,7 +53,8 @@ public class GameControllers : MonoBehaviour
 
     private void Start()
     {
-       
+        State = PlayState.CheckingCanplayable;
+
         int size = layer1.x + layer1.y + layer1.z + layer2.x + layer2.y + layer2.z + layer3.x + layer3.y + layer3.z;
         if (size % 2 != 0)
         {
@@ -107,6 +111,16 @@ public class GameControllers : MonoBehaviour
         }
         switch (State)
         {
+            case PlayState.CheckingCanplayable:
+                if(CanPlayble())
+                {
+                    State = PlayState.Default;
+                }
+                else
+                {
+                    RecreateTable();
+                }
+                break;
             default:
             case PlayState.Default:
                 if (Input.GetMouseButtonDown(0))
@@ -152,7 +166,7 @@ public class GameControllers : MonoBehaviour
                 break;
             case PlayState.Checking:
                 _checkTimer += Time.deltaTime;
-                if (_checkTimer > 0.5f)
+                if (_checkTimer > 0.25f)
                 {
                     //Debug.Log(Mahjongs.Count);
                     _checkTimer = 0.0f;
@@ -189,16 +203,9 @@ public class GameControllers : MonoBehaviour
                         SelectionB.SelectEffect(false);
                         SelectionA = null;
                         SelectionB = null;
-
                     }
 
-                   if(CanPlayble() == false)
-                    {
-                        //ShuffleTable();
-                        Debug.Log("Cannot play");
-                    }
-
-                    State = PlayState.Default;
+                    State = PlayState.CheckingCanplayable;
                 }
                 break;
         }
@@ -325,7 +332,21 @@ public class GameControllers : MonoBehaviour
         return a.Data.ID == b.Data.ID;
     }
 
-    public bool CanPlayble()
+
+    private IEnumerator CheckCanPlayableCoroutine(System.Action<bool> callback)
+    {
+        yield return new WaitForSeconds(0.5f);
+        
+        if (CanPlayble())
+        {
+            callback?.Invoke(true);
+        }
+        else
+        {
+            callback?.Invoke(false);
+        }
+    }
+    private bool CanPlayble()
     {
         if (Mahjongs.Count == 0)
         {
@@ -342,90 +363,17 @@ public class GameControllers : MonoBehaviour
                 {
                     if (Mahjongs[i].Data.ID == Mahjongs[j].Data.ID)
                     {
-                        Debug.Log("True");
                         return true;
                     }
                 }
             }
         }
 
-        Debug.Log("False");
         return false;
     }
-    private void ShuffleTable()
-    {
-        Debug.Log("Shuffle");
-
-        Debug.Log($"Remain: {Mahjongs.Count}");
-
-        int size = Mahjongs.Count;
-        MahjongSO[] dataCopied = new MahjongSO[size];
-
-        for(int i = 0; i < Mahjongs.Count; i++)
-        {
-            dataCopied[i] = Mahjongs[i].Data;
-        }
-
-        for(int i = 0; i < Mahjongs.Count; i++)
-        {
-            Destroy(Mahjongs[i].gameObject);
-        }
-        Mahjongs.Clear();
-
-
-        if(size > Layer1Size)
-        {
-            GenerateLayerOfMahjong(layer1.x, layer1.y, layer1.z, Layer1Size);
-            size -= Layer1Size;
-        }
-        else
-        {
-            GenerateLayerOfMahjong(layer1.x, layer1.y, layer1.z, size);
-        }
-
-
-        if (size > 0 && size > Layer2Size)
-        {
-            GenerateLayerOfMahjong(layer2.x, layer2.y, layer2.z, Layer2Size);
-            size -= Layer2Size;
-        }
-        else
-        {
-            GenerateLayerOfMahjong(layer2.x, layer2.y, layer2.z, size);
-        }
-
-
-        if (size > 0 && size > Layer3Size)
-        {
-            GenerateLayerOfMahjong(layer3.x, layer3.y, layer3.z, Layer3Size);
-            size -= Layer3Size;
-        }
-        else
-        {
-            GenerateLayerOfMahjong(layer3.x, layer3.y, layer3.z, size);
-        }
-
-
-    }
-    //void ShuffleArray<T>(T[] array)
-    //{
-    //    Debug.Log("Shuffle");
-    //    int n = array.Length;
-    //    while (n > 1)
-    //    {
-    //        n--;
-    //        int k = rng.Next(n + 1);
-    //        T value = array[k];
-    //        array[k] = array[n];
-    //        array[n] = value;
-
-    //        Debug.Log("a");
-    //    }
-    //}
-
+ 
     void ShuffleList<T>(List<T> list)
     {
-        Debug.Log("Shuffle");
         int n = list.Count;
         while (n > 1)
         {
@@ -434,8 +382,6 @@ public class GameControllers : MonoBehaviour
             T value = list[k];
             list[k] = list[n];
             list[n] = value;
-
-            Debug.Log("a");
         }
     }
     #endregion
