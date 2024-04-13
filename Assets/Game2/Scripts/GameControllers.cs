@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameControllers : MonoBehaviour
 {
     public static GameControllers Instance { get; private set; }
+    public static event System.Action<MahjongSO> OnMatched;
+    public static event System.Action OnCompleteRequest;
     public Transform Center;
 
     [SerializeField] private List<MahjongSO> _allMahjongData;
@@ -17,17 +19,18 @@ public class GameControllers : MonoBehaviour
     private int _currentGetDataIndex = 0;
 
 
-    private Vector3Int layer1 = new Vector3Int(4, 3, 4);
-    private Vector3Int layer2 = new Vector3Int(3, 2, 3);
-    private Vector3Int layer3 = new Vector3Int(4, 3, 4);
+    private Vector3Int layer1;
+    private Vector3Int layer2;
+    private Vector3Int layer3;
 
 
     public int Layer1Size { get => layer1.x + layer1.y + layer1.z; }
     public int Layer2Size { get => layer2.x + layer2.y + layer2.z; }
     public int Layer3Size { get => layer3.x + layer3.y + layer3.z; }
+
     private System.Random rng;
 
-    public MahjongSO RequestMahjong { get; private set; }   
+
 
     public enum PlayState
     {
@@ -43,6 +46,12 @@ public class GameControllers : MonoBehaviour
     public Mahjong SelectionB;
 
 
+    // game event
+    public MahjongSO RequestMahjong { get; private set; }
+    public bool CountDown { get; private set; } = false;
+    private float _eventTime = 15.0f; // time in seconds
+    public float EventTimer { get; private set; } = 0.0f;
+
 
     private void Awake()
     {
@@ -53,14 +62,21 @@ public class GameControllers : MonoBehaviour
 
     private void Start()
     {
-        State = PlayState.CheckingCanplayable;
+        TimerManager.OnEventTimeReached += AddGameplayEvent;
+        OnMatched += CheckRequest;
 
+        layer1 = GameManager.Instance.CurrentLevel.Layer1;
+        layer2 = GameManager.Instance.CurrentLevel.Layer2;
+        layer3 = GameManager.Instance.CurrentLevel.Layer3;
+
+
+        State = PlayState.CheckingCanplayable;
         int size = layer1.x + layer1.y + layer1.z + layer2.x + layer2.y + layer2.z + layer3.x + layer3.y + layer3.z;
         if (size % 2 != 0)
         {
             Debug.Log("Size not a even number.");
         }
-        Debug.Log($"size: {size}");
+
         _initializeData = new();
         _currentGetDataIndex = 0;
         for (int i = 0; i < size; i++)
@@ -81,6 +97,19 @@ public class GameControllers : MonoBehaviour
         GenerateLayerOfMahjong(layer3.x, layer3.y, layer3.z, 2);
     }
 
+
+    private void OnDestroy()
+    {
+        TimerManager.OnEventTimeReached -= AddGameplayEvent;
+        OnMatched -= CheckRequest;
+    }
+
+    public void AddGameplayEvent()
+    {
+        RequestMahjong = Mahjongs[0].Data;
+        EventTimer = _eventTime;
+        CountDown = true;
+    }
     public void RecreateTable()
     {
         _currentGetDataIndex = 0;
@@ -105,10 +134,8 @@ public class GameControllers : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            RecreateTable();
-        }
+        if (GameplayManager.Instance.CurrentState != GameplayManager.GameState.PLAYING) return;
+  
         switch (State)
         {
             case PlayState.CheckingCanplayable:
@@ -172,8 +199,9 @@ public class GameControllers : MonoBehaviour
                     _checkTimer = 0.0f;
                     if (CheckMatch(SelectionA, SelectionB))
                     {
+                        SoundManager.Instance.PlaySound(SoundType.Button, false);
                         // Match
-                        Debug.Log("Match");
+                        OnMatched?.Invoke(SelectionA.Data);
 
                         SelectionA.SetMatchPhysics();
                         SelectionB.SetMatchPhysics();
@@ -195,8 +223,9 @@ public class GameControllers : MonoBehaviour
                     }
                     else
                     {
+                        SoundManager.Instance.PlaySound(SoundType.HitBlock, false);
                         // Not match
-                        Debug.Log("No match");
+                        //Debug.Log("No match");
 
                         // reset selection
                         SelectionA.SelectEffect(false);
@@ -210,6 +239,28 @@ public class GameControllers : MonoBehaviour
                 break;
         }
 
+
+        if(CountDown)
+        {
+            EventTimer -= Time.deltaTime;
+            if(EventTimer < 0.0f)
+            {
+                EventTimer = 0.0f;
+                GameplayManager.Instance.ChangeGameState(GameplayManager.GameState.GAMEOVER);
+            }
+        }
+    }
+    private void CheckRequest(MahjongSO data)
+    {
+        if (CountDown)
+        {
+            if (RequestMahjong.ID == data.ID)
+            {
+                CountDown = false;
+                EventTimer = 0.0f;
+                OnCompleteRequest?.Invoke();
+            }
+        }
     }
 
     private void GenerateLayerOfMahjong(int line1Width, int line2Width, int line3Width, int layer)
@@ -333,24 +384,13 @@ public class GameControllers : MonoBehaviour
     }
 
 
-    private IEnumerator CheckCanPlayableCoroutine(System.Action<bool> callback)
-    {
-        yield return new WaitForSeconds(0.5f);
-        
-        if (CanPlayble())
-        {
-            callback?.Invoke(true);
-        }
-        else
-        {
-            callback?.Invoke(false);
-        }
-    }
+   
     private bool CanPlayble()
     {
         if (Mahjongs.Count == 0)
         {
             Debug.Log("Win");
+            GameplayManager.Instance.ChangeGameState(GameplayManager.GameState.WIN);
             return false;
         }
         for (int i = 0; i < Mahjongs.Count; i++)

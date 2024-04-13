@@ -11,8 +11,6 @@ public class GameplayManager : MonoBehaviour
     public static event System.Action OnRoundFinished;
     public static event System.Action OnStartNextRound;
 
-    public GameObject Match3Prefab;
-    private GameObject _match3Instance;
 
     public enum GameState
     {
@@ -80,20 +78,32 @@ public class GameplayManager : MonoBehaviour
         {
             default: break;
             case GameState.WAITING:
-
+                StartCoroutine(Utilities.WaitAfter(1.0f, () =>
+                {
+                    TimerManager.Instance.StartTimer();
+                    ChangeGameState(GameState.PLAYING);
+                }));
 
                 break;
             case GameState.PLAYING:
                 Time.timeScale = 1.0f;
-            
+
                 OnPlaying?.Invoke();
                 break;
             case GameState.WIN:
-              
+                StartCoroutine(Utilities.WaitAfter(0.25f, () =>
+                {
+                    SoundManager.Instance.PlaySound(SoundType.Button, false);
+                    UIGameplayManager.Instance.DisplayUIWin(true);
+                }));
                 OnWin?.Invoke();
                 break;
             case GameState.GAMEOVER:
-              
+                StartCoroutine(Utilities.WaitAfter(0.25f, () =>
+                {
+                    SoundManager.Instance.PlaySound(SoundType.HitBlock, false);
+                    UIGameplayManager.Instance.DisplayUIGameover(true);
+                }));
                 OnGameOver?.Invoke();
                 break;
             case GameState.PAUSE:
@@ -106,25 +116,6 @@ public class GameplayManager : MonoBehaviour
             case GameState.EXIT:
                 Time.timeScale = 1.0f;
                 break;
-        }
-    }
-
-    public void CreateMatch3()
-    {
-        if(_match3Instance == null)
-        {
-            _match3Instance = Instantiate(Match3Prefab);
-            _match3Instance.GetComponent<Canvas>().worldCamera = Camera.main;
-        }
-            
-    }
-
-
-    public void RemoveMatch3()
-    {
-        if (_match3Instance != null)
-        {
-            Destroy(_match3Instance.gameObject);
         }
     }
 }

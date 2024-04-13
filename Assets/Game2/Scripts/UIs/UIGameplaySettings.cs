@@ -1,7 +1,7 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
 
-public class UISettings : CustomCanvas
+public class UIGameplaySettings : CustomCanvas
 {
     public Button CloseBtn;
     public Button RestartBtn;
@@ -17,13 +17,10 @@ public class UISettings : CustomCanvas
     {
         UpdateSoundFXUI();
         UpdateMusicUI();
-
         CloseBtn.onClick.AddListener(() =>
         {
             SoundManager.Instance.PlaySound(SoundType.Button, false);
-
-            UIManager.Instance.CloseAll();
-            UIManager.Instance.DisplayMainmenu(true);
+            UIGameplayManager.Instance.DisplayUIGameplaySettings(false);
         });
 
         RestartBtn.onClick.AddListener(() =>
