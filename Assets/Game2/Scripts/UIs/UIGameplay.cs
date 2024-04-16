@@ -56,6 +56,12 @@ public class UIGameplay : CustomCanvas
         {
             EventTimerText.text = TimeToText(GameControllers.Instance.EventTimer);
         }
+
+        // Handle back button android devices
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Loader.Load(Loader.Scene.MenuScene);
+        }
     }
 
 

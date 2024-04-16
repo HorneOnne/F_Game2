@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public List<LevelDataSO> Levels;
     public LevelDataSO CurrentLevel;
+    public bool ShowWelcome = true;
 
     private void Awake()
     {

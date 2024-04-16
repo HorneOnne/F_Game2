@@ -21,7 +21,12 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         CloseAll();
-        DisplayUIWelcome(true);
+        if(GameManager.Instance.ShowWelcome)
+        {
+            GameManager.Instance.ShowWelcome = false;
+            DisplayUIWelcome(true);
+        }
+      
         DisplayMainmenu(true);
     }
 
